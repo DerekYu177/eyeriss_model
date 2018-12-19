@@ -45,67 +45,80 @@ If you opened the file, you would understand the necessity of a global cost trac
 ## Example
 
 Suppose you had a PE array of 2x2:
-+__-+-+
+```
++-+-+
 |B|D|
-+_-+_-+
++-+-+
 |A|C|
-+_-+_-+
-
++-+-+
+```
 An ifmap of size 5x5:
-[
+```
+ifmap = [
   [1 ...  5],
   [6 ...  10],
   [11 ... 15],
   [16 ... 20],
   [21 ... 25],
 ]
+```
 
 and a kernel of size 2x2:
-[
+```
+kernel = [
   [1, 2],
   [3, 4]
 ]
-
+```
 and a stride of 1x1.
 
 ### Step 1
 At the first step, the kernels are inserted into the leftmost side:
-+__------------------+----------------+
+```
++------------------+----------------+
 | B(kernel=[1, 2]) | D(kernel=None) |
-+-----------------+-----------------+
++------------------+----------------+
 | A(kernel=[3, 4]) | C(kernel=None) |
-+-----------------+-----------------+
++------------------+-----------------+
+```
 
 Then the ifmaps are inserted along the bottom and leftmost side:
-+__----------------------------------+----------------------------+
+```
++----------------------------------+----------------------------+
 | B(kernel=[1, 2], ifmap=[1...5])  | D(kernel=None, ifmap=None) |
 +----------------------------------+----------------------------+
 | A(kernel=[3, 4], ifmap=[6...10]) | C(kernel=None, ifmap=None) |
 +----------------------------------+----------------------------+
-
+```
 The convolution is computed on a per PE basis, starting from the bottom half:
 
 #### Delta Step
-+__---------------------------------------------------------+---------------------------------------+
+```
++---------------------------------------------------------+---------------------------------------+
 | B(kernel=[1, 2], ifmap=[1...5], psum=None)              | D(kernel=None, ifmap=None, psum=None) |
 +---------------------------------------------------------+---------------------------------------+
 | A(kernel=[3, 4], ifmap=[6...10], psum=[46, 53, 60, 67]) | C(kernel=None, ifmap=None, psum=None) |
 +---------------------------------------------------------+---------------------------------------+
+```
 #### Delta Step 2
 The psum from the A is sent to B, and B computes the following accumulation psum = psum + conv(kernel, ifmap)
-+__---------------------------------------------------------+---------------------------------------+
+```
++---------------------------------------------------------+---------------------------------------+
 | B(kernel=[1, 2], ifmap=[1...5], psum=[51, 61, 71, 81])  | D(kernel=None, ifmap=None, psum=None) |
 +---------------------------------------------------------+---------------------------------------+
 | A(kernel=[3, 4], ifmap=[6...10], psum=[46, 53, 60, 67]) | C(kernel=None, ifmap=None, psum=None) |
 +---------------------------------------------------------+---------------------------------------+
+```
 #### Delta Step 3
 The final psum at B (the topmost of the PE array) is inserted into the ofmap (4x4)
+```
 Ofmap = [
   [51, 61, 71, 81],
   None,
   None,
   None,
 ]
+```
 
 ### Step 2
 The ifmaps are moved diagonally upwards; the amount that they move by is dependent on the stride.
@@ -115,13 +128,13 @@ We reset all of the psums.
 New ifmaps will be inserted into the PE array.
 Kernels are propagated to the right.
 Since we have not finished the ofmap, we keep the kernel the same
-
-+__-----------------------------------------------+----------------------------------------------+
+```
++-----------------------------------------------+----------------------------------------------+
 | B(kernel=[1, 2], ifmap=[16...20], psum=None)  | D(kernel=[1, 2], ifmap=[6...10], psum=None)  |
 +-----------------------------------------------+----------------------------------------------+
 | A(kernel=[3, 4], ifmap=[21...25], psum=None)  | C(kernel=[3, 4], ifmap=[11...15], psum=None) |
 +-----------------------------------------------+----------------------------------------------+
-
+```
 And now we repeat the delta steps, produce ofmap row 2, and continue.
 
 ## Repo
