@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+This file defines the data exchange format between the Mapper and SystemC
+components of the project.
+-->
+<eyeriss>
+
+  <!-- Data relating to PE setup -->
+  <pe_array>
+
+    <!-- Height of PE array -->
+    <pe_height></pe_height>
+
+    <!-- Width of PE array -->
+    <pe_width></pe_width>
+
+  </pe_array>
+
+  <!-- Data relating to convolutional layer -->
+  <conv_layer>
+
+    <!-- Height of Input feature map size (non-flattened) -->
+    <ifmap_height></ifmap_height>
+
+    <!-- Width of Input feature map size (non-flattened) -->
+    <ifmap_width></ifmap_width>
+
+    <!-- Height of Kernel -->
+    <filter_height></filter_height>
+
+    <!-- Width of Kernel -->
+    <filter_width></filter_width>
+
+    <!-- Number of Kernels -->
+    <filter_channel_size>4</filter_channel_size>
+
+    <!-- Width of Stride -->
+    <stride_width></stride_width>
+
+    <!-- Height of Stride -->
+    <stride_height></stride_height>
+
+    <!-- Number of DRAM Reads -->
+    <dram_read></dram_read>
+
+    <!-- Number of DRAM Writes -->
+    <dram_write></dram_write>
+
+    <!-- Number of Scratchpad Reads -->
+    <spad_read></spad_read>
+
+    <!-- Number of Scratchpad Writes -->
+    <spad_write></spad_write>
+
+    <!-- Number of Addition Operations -->
+    <add></add>
+
+    <!-- Number of Multiplication Operations -->
+    <mult></mult>
+
+    <!-- Number of Inter-Processing-Element Reads -->
+    <ipe_read></ipe_read>
+
+    <!-- Number of Inter-Processing-Element Writes -->
+    <ipe_write></ipe_write>
+
+  </conv_layer>
+
+  <!-- Data relating to fully connected (FC) layer -->
+  <fc_layer>
+
+    <!-- Number of FC layers -->
+    <layers>3</layers>
+
+    <!-- Data relating to the first layer -->
+    <layer_1>
+
+        <!-- Weight row width (m) -->
+        <weight_width>16</weight_width>
+
+        <!-- Weight column width (n) -->
+        <weight_height>64</weight_height>
+
+    </layer_1>
+
+    <!-- Data relating to the second layer -->
+    <layer_2>
+
+        <!-- Weight row width (m) -->
+        <weight_width>32</weight_width>
+
+        <!-- Weight column width (n) -->
+        <weight_height>10</weight_height>
+
+    </layer_2>
+
+    <!-- Data relating to the final layer -->
+    <layer_3>
+
+        <!-- Weight row width (m) -->
+        <weight_width>10</weight_width>
+
+        <!-- Weight column width (n) -->
+        <weight_height>1</weight_height>
+
+    </layer_3>
+
+  </fc_layer>
+
+</eyeriss>
